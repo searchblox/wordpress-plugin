@@ -1,0 +1,23 @@
+/* Overrides the default jquery styles for automcomplete hover */
+
+.ui-state-focus {
+	
+  border-top: 1px solid #145A93 !important;
+  border-bottom: 1px solid #086aa8 !important;
+  background-color: #04C !important;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #37a3e9), color-stop(100%, #1285d5)) !important;
+  background: -webkit-linear-gradient(#37a3e9, #1285d5) !important;
+  background: -moz-linear-gradient(#37a3e9, #1285d5) !important;
+  background: -o-linear-gradient(#37a3e9, #1285d5)!important;
+  background: linear-gradient(#37a3e9, #1285d5)!important;
+  -webkit-box-shadow: 0 1px 0 #69bdf3 inset!important;
+  -moz-box-shadow: 0 1px 0 #69bdf3 inset!important;
+  box-shadow: 0 1px 0 #69bdf3 inset!important;
+
+ color: #0b2644 !important;
+}
+
+.ui-menu {
+	
+	max-width:230px;
+}

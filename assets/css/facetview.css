@@ -1,0 +1,132 @@
+.ui-autocomplete {
+   /* position: relative !important;*/
+}
+
+#searchblox_autosuggest { 
+
+  max-width :100px; 
+  position :relative;
+}
+
+#searchblox_autosuggest ul li {
+	 
+	   color: #0b2644 !important;
+	
+}
+
+/* Overrides the default jquery styles for automcomplete hover */
+
+.ui-state-focus {
+	
+  border-top: 1px solid #145A93 !important;
+  border-bottom: 1px solid #086aa8 !important;
+  background-color: #04C !important;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #37a3e9), color-stop(100%, #1285d5)) !important;
+  background: -webkit-linear-gradient(#37a3e9, #1285d5) !important;
+  background: -moz-linear-gradient(#37a3e9, #1285d5) !important;
+  background: -o-linear-gradient(#37a3e9, #1285d5)!important;
+  background: linear-gradient(#37a3e9, #1285d5)!important;
+  -webkit-box-shadow: 0 1px 0 #69bdf3 inset!important;
+  -moz-box-shadow: 0 1px 0 #69bdf3 inset!important;
+  box-shadow: 0 1px 0 #69bdf3 inset!important;
+
+ color: #0b2644 !important;
+}
+
+#facetview_freetext{
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+	width:60%;
+	height:100%;
+}
+#facetview_filters h3{
+    margin:40px 0 20px 0;
+}
+#facetview_advanced{
+    float:left;
+    clear:left;
+    margin:10px;
+    padding:3px 5px 5px 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border:1px solid #a1a1a1;
+    color:#a1a1a1;
+    overflow:hidden;
+    width:165px;
+}
+#facetview_advanced select{
+    width:160px;
+    background:#fff;
+    border:1px solid #a1a1a1;
+    color:#a1a1a1;
+    font-size:11px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+#facetview_visualisation{
+    border:1px solid #ccc;
+    margin:10px 0 10px 0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+.node{
+    cursor:pointer;
+}
+.facetview_filterchoice{
+    text-decoration:none;
+    color:#373737;
+}
+.facetview_filterselected{
+    margin:5px;
+}
+.facetview_freetext_filterdiv{
+    float:left;
+    clear:both;
+    background:#eee;
+    padding:0;
+    color:green;
+    width:100%;
+}
+.facetview_advancedshow{
+    text-decoration:none;
+    color:#a1a1a1;
+}
+
+.facetview_resultactions a{
+    color:#353535;
+    font-weight:bold;
+    text-decoration:none;
+    margin:0 5px 0 5px;
+}
+#facetview_advfilterdate a{
+    text-decoration:none !important; 
+    color:#373737 !important;
+}
+#facetview_advfilterdate a:hover{
+color:#08c !important;
+}
+#facetview_advfiltersize a{
+    text-decoration:none !important; 
+    color:#373737 !important;
+}
+#facetview_advfiltersize a:hover{
+color:#08c !important;
+}
+.facetview_filterchoice a:hover{
+color:#08c !important;
+}
+
+
+.entry-title
+{
+/*display: none !important;*/
+}
+
+#searchblox-footer{
+height: 4em; 
+margin-top: 20px;
+}
