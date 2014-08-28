@@ -9,7 +9,7 @@ if ( ! current_user_can( 'activate_plugins' ) )
 if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) 
     exit();
 
-$option_name = array ( 'searchblox_apikey'  , 'searchblox_location' , 'searchblox_collection' ) ;
+$option_name = array ( 'searchblox_apikey'  , 'searchblox_location' , 'searchblox_collection' , 'searchblox_portno' , 'searchblox_search_collection' ) ;
 
 foreach($option_name as $option) {
 	

@@ -13,14 +13,11 @@
 
 		add_action( 'admin_enqueue_scripts', 'searchblox_wp_admin_style' );
 		add_action( 'admin_menu', 'searchblox_admin_init' );
+		add_action( 'publish_post', 'searchblox_trigger_index' ); // If a post is published, index it.
+		add_action( 'delete_post', 'searchblox_trigger_delete' ); // If a post is deleted, remove it from index.
+		
 		/// ALL ACTIONS //
-
-		add_option( "searchblox_last_ID", 0 ); // Last indexed post ID
-		add_option( "searchblox_paused", "No" ); // Default status for Pause
-		add_option( "searchblox_error_count", 0 ); // Error count save area
-		add_option( "searchblox_jquery", 'Yes' ); // Include jQuery to search page
-
-
+		
 
 		// Suggest apikey at the beginning or apikey entered blank
 		$default_apikey = searchblox_check_apikey();
@@ -61,7 +58,7 @@
 					</div>	
 					<p>
 						<b>To administer your SearchBlox Search Collection, visit the 
-						<a href="' . esc_attr ( SEARCHBLOX_LOCATION ) .':8080/searchblox/admin/main.jsp" 
+						<a href="'. SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/admin/main.jsp" 
 						target="_blank">SearchBlox Dashboard.</a></b>
 					</p>' ; 
 		echo $header ; 			
@@ -196,7 +193,6 @@ function searchblox_sanitize( $text ) {
 		echo '<div class="error fade"><p><b>[SearchBlox]</b> Server location path cannot be empty.</p></div>';
 	}
 
-
 	function searchblox_simplexml_exist_warning() {
 		echo '<div class="error fade"><p><b>[SearchBlox]</b> In your php configuration <b>simplexml</b> is not enabled. This plugin needs simplexml to function. Please adit your php.ini file to enable simplexml or contact your hosting provider to enable it.</p></div>';
 	}
@@ -210,7 +206,7 @@ function searchblox_sanitize( $text ) {
 	}
 
 	function searchblox_path_warning() {
-		echo '<div class="error fade"><p><b>[SearchBlox]</b> Invalid server name OR can not communicate with the server.</p></div>';
+		echo '<div class="error fade"><p><b>[SearchBlox]</b> Invalid server name OR unable to communicate with the server. Please make sure you have provided the correct Server Name and Port # </p></div>';
 	}
 
 /*
@@ -271,6 +267,19 @@ function searchblox_sanitize( $text ) {
 			else return false;
 		}
 	}
+	
+/*
+ * Check If settings are configured
+ */
+ 
+	function searchblox_config_check() {
+	
+	   if( ! SEARCHBLOX_APIKEY   ||  ! SEARCHBLOX_COLLECTION ||  ! SEARCHBLOX_LOCATION || ! SEARCHBLOX_PORTNO  ) {
+          return false ; 
+        } else {
+		  return true ;  
+		}
+	}
 
 
 /*
@@ -291,4 +300,14 @@ function searchblox_sanitize( $text ) {
 	if ( !function_exists( 'add_action' ) ) {
 		echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
 		exit;
+	}
+
+
+/*
+ * Returns SearchBlox Admin Page url
+ */
+
+	function searchblox_url() {
+		
+		return get_admin_url() . '?' . $_SERVER['QUERY_STRING'] ; 
 	}

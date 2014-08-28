@@ -1,15 +1,14 @@
 <?php defined('ABSPATH') or die("Direct Access Not Allowed!");
 
-function searchblox_xml_form( $result = '' , $categories = ''  ) {
+function searchblox_xml_form( $result = '' , $categories = '' , $existing_tags = ''   ) {
 	
 	$url_location = get_permalink( $result->ID );
 	if (substr($url_location,-1)!= "/") { 
 		$url_location .= "/";
 	}
 	$lm_date = date('d F Y h:i:s T' ,strtotime($result->post_modified));
-
-	if(!isset($existing_tags))
-		$existing_tags = "" ; 
+	
+	$existing_tags = rtrim( $existing_tags , ',') ; 
 
 	return $xml_input='<?xml version="1.0" encoding="utf-8"?>
 				<searchblox apikey="'.searchblox_check_apikey().'">
@@ -23,7 +22,8 @@ function searchblox_xml_form( $result = '' , $categories = ''  ) {
 
 				<size>'.(2*strlen( $result->post_content )).'</size>
 				<alpha></alpha>
-				<contenttype>HTML</contenttype>'.$categories.'
+				<contenttype>HTML</contenttype>
+				'.$categories.'
 				</document>
 				</searchblox>
 				';
