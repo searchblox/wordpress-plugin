@@ -1255,33 +1255,8 @@ jQuery.extend({
             	});
             });
            
-            //tagcloud preperation
-            /*
-			{
-            	var taghtml = "<h3>Most Used Tags</h3></br><div id='facettagcloud'>";
-            	if($('#facetview_keywords').children().find('a').length>0)
-            		$('#facetview_keywords').children().find('a').each(function(){
-            			taghtml += "<a href='"+ facetview_vars.plugin_path+"/index.html?query="+$(this).attr('forcloudtag')+"' tagrel='"+$(this).attr('forcloudrel')+"'>" + $(this).attr('forcloudtag') + " </a>";
-            		})
-            	taghtml += "</div>";
-            	$('#facetview_leftcol_tagcloud').html(taghtml);
-            	var list = document.getElementById("facettagcloud");
-            	if(list.childNodes.length>0){
-            		shuffleNodes(list);
-                	$.fn.tagcloud.defaults = {
-                			size: {start: 14, end: 18, unit: 'pt'},
-                			color: {start: '#cde', end: '#f52'}
-                	};
-                	$(function () {
-                		$('#facettagcloud a').tagcloud();
-                	});
-            	}
-            	if($('#facettagcloud > a').length > 5)
-            		$('#facetview_leftcol_tagcloud').show();
-            	else
-            		$('#facetview_leftcol_tagcloud').hide();
-            }
-            */
+            //tagcloud preperation removed
+          
             //test percolator
             {
             	$('#facetview_leftcol_percolator > a').bind('click',function(){
@@ -1483,6 +1458,23 @@ jQuery.extend({
 	}
 	
 	
+	var autosuggest = function(event)
+	{
+		event.preventDefault();
+		if(autosuggestflag){
+			//$('#facetview_freetext').autocomplete({
+				//source : []
+			//});
+			autosuggestflag = false;
+			$('#facetview_autosuggest_flag').attr('class','');
+		}else{
+			autosuggestflag = true;
+			$('#facetview_autosuggest_flag').attr('class','icon-ok')
+		}
+		
+		//if(autosuggestflag){ alert (autosuggestflag); } 
+	}
+	
 	
     var dosearch = function() {
        
@@ -1492,7 +1484,8 @@ jQuery.extend({
         //setting autocomplete
 		
 		if( options.query ) { 
-			if(autosuggestflag){ 
+			if(autosuggestflag ){ 
+				 $('#searchblox_autosuggest').show();
 				var callback = function( request, response ) { 
 							$.ajax({ 
 								type: "get",
@@ -1536,7 +1529,7 @@ jQuery.extend({
 				});
 			}
 			else{
-				// $('#facetview_freetext').autocomplete( "destroy" );
+				 $('#searchblox_autosuggest').hide();
 			}
 		}	
     		  	
@@ -1545,7 +1538,7 @@ jQuery.extend({
 	    q=" ";
             // make the search query
 	    //q="query="+encodeURI(escape(options.query));
-	    q='query="'+ encodeURIComponent(options.query) + "\"" ;
+	    q='query='+ encodeURIComponent(options.query)  ;
 	    // add default params
 	    q=adddefaultparams(q);
 	    // add facet filter values to query
@@ -1585,8 +1578,8 @@ jQuery.extend({
 	    q=adddefaultdatefacet(q) ; 
 			
 			if($('#facetview_freetext').val().trim() != ""){
-				//displayloader();
-
+				displayloader();
+              
 				$.getJSON(facetview_vars.search_url,"callback=?&"+q+"&" + facetview_vars.search_collection_ids ,
 						function(data) {
 							createCookie("searchblox_plugin_query",q,0);
@@ -1607,7 +1600,7 @@ jQuery.extend({
 							
 							showresults(data);
 							
-							//hideloader();
+							hideloader();
 				});
 
 			}
@@ -1624,14 +1617,18 @@ jQuery.extend({
 	
         // trigger a search when a filter choice is clicked
         var clickfilterchoice = function(event) {
-            event.preventDefault();
+            event.preventDefault(); 
+			var keyword = splitStringfromFirst($(this).attr('id'),'_')[1] ; 
+			
+			keyword = keyword.replace(".", " " ) ; 
+			
             var newobj = '<a class="facetview_filterselected facetview_clear ' + 
                 'btn btn-info" rel="' + $(this).attr("rel") + 
                 '" alt="remove" title="remove"' +
-                ' href="' + $(this).attr("href") + '" filtername='+splitStringfromFirst($(this).attr('id'),'_')[1]+' >' +
+                ' href="' + $(this).attr("href") + '" filtername='+keyword+' >' +
                 $(this).html().replace(/\(.*\)/,'') + ' <i class="icon-remove"></i></a>';
-            if($('#facetview_selectedfilters').find('a[rel='+$(this).attr("rel")+'][filtername='+splitStringfromFirst($(this).attr('id'),'_')[1]+']').attr('filtername')==undefined){
-            filterclick($(this).attr("rel"),splitStringfromFirst($(this).attr('id'),'_')[1]);
+            if($('#facetview_selectedfilters').find('a[rel='+$(this).attr("rel")+'][filtername="'+keyword+'"]').attr('filtername')==undefined){
+            filterclick($(this).attr("rel"),keyword);
             $('#facetview_selectedfilters').append(newobj);
             $('.facetview_filterselected').unbind('click',clearfilter);
             $('.facetview_filterselected').bind('click',clearfilter);
@@ -1774,9 +1771,6 @@ jQuery.extend({
              <div class="row-fluid"> \
         	   <div class="span3"> \
                 <div class="well" id="facetview_leftcol" style="display:none;width:100%;float:left"> \
-	    	<div class="" id="facetview_leftcol_percolator" style="margin-bottom:10px;display:none;"> \
-    		<a class="btn btn-warning" href="#">Create Alert</a>\
-	    	</div> \
          		 <div id="nofresults" style="margin-bottom:-34px;"></div>\
                   <div id="facetview_filters"></div>\
         	 	 	 <div id="adv_filters"></div>\
@@ -1814,9 +1808,9 @@ jQuery.extend({
       	  			<div><div id="suggest"></div>\
                   <div><div id="ads"></div>\
          	<div id="loading" style="display:none;"> \
-         	<div class="" style="position: absolute; z-index: 1000;background-color: black; opacity: 0.2; ">\
+         	<div class="" style="position: relative; z-index: 1000;background-color: black; opacity: 0.2; ">\
          	</div>\
-         	<img src="'+ facetview_vars.plugin_path +'/assets/images/loading.gif" style="position: absolute;top:43%;left:49%;z-index: 1000;"/>\
+         	<img src="'+ facetview_vars.plugin_path +'/assets/images/loading.gif" style="position: absolute;top:30%;left:49%;z-index: 1000;"/>\
          	</div>\
                  <table class="table table-striped" id="facetview_results"></table> \
                  <div class="row-fluid" style="float:center; margin:0;" id="facetview_metadata"></div> \
@@ -1874,19 +1868,6 @@ jQuery.extend({
 		dosearch();
 	}
 	
-	var autosuggest = function(event)
-	{event.preventDefault();
-		if(autosuggestflag){
-			//$('#facetview_freetext').autocomplete({
-				//source : []
-			//});
-			autosuggestflag = false;
-			$('#facetview_autosuggest_flag').attr('class','');
-		}else{
-			autosuggestflag = true;
-			$('#facetview_autosuggest_flag').attr('class','icon-ok')
-		}
-	}
 
 	var fixadvfiltercount = function()
 	{

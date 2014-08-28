@@ -70,6 +70,7 @@
 	</p>
 	<form name="re_configure_form" method="post" >
 		<?php wp_nonce_field('searchblox_nonce','searchblox_nonce_field'); ?>
+		<input type="hidden" name = "searchblox_clear" value="clear" />
 	    <input type="submit" name="submit_re_configure" value="Clear Configuration"  class="button-primary" />
 	</form>
 

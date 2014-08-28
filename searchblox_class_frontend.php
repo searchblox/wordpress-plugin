@@ -6,7 +6,7 @@
 * 
 */
 
-if ( !class_exists( 'Searchblox_frontend' ) ) {
+if ( ! class_exists( 'Searchblox_frontend' ) ) {
 	
 	
 	class Searchblox_frontend { 
@@ -19,11 +19,11 @@ if ( !class_exists( 'Searchblox_frontend' ) ) {
 		private $is_search    =  false ;
 
 
-		public function __construct() {  if(!defined('SEARCHBLOX_COLLECTION'))  die ;
+		public function __construct() {  
 
-			add_action('pre_get_posts', array( $this , 'searchblox_get_result'  )); // Get Result for the query
-			add_action('init', array( $this , 'register_script'));
-			add_action( 'wp_footer', array(  $this , 'enqueue_scripts')  );
+			add_action(  'pre_get_posts', array( $this , 'searchblox_get_result'  )); // Get Result for the query
+			add_action(  'init', array( $this , 'register_script'));
+			add_action(  'wp_footer', array(  $this , 'enqueue_scripts')  );
 			add_action ( 'wp_footer' , array ( $this , 'enqueue_script_search')) ;
 
 			add_action('wp_ajax_nopriv_wp_search_auto_suggest', array( $this , 'wp_search_auto_suggest') );
@@ -57,8 +57,8 @@ if ( !class_exists( 'Searchblox_frontend' ) ) {
 
 			$query = urlencode( sanitize_text_field( $wp_query->query['s'] ) ) ;  
 			$collection_col =  $this->get_collection_ids() ; 
-			$url = SEARCHBLOX_LOCATION . ':8080/searchblox/servlet/SearchServlet?&query="'. $query .
-										 '"&xsl=json&'. $collection_col  ; 
+			$url = SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/SearchServlet?&query='. $query .
+										 '&xsl=json&'. $collection_col  ; 
 			$response = $this->searchblox_curl_get_request( $url ) ;
 
 			if( $this->isJson( $response ) ) {
@@ -228,7 +228,7 @@ if ( !class_exists( 'Searchblox_frontend' ) ) {
 
 			 $mydata = sanitize_text_field( $_GET['mydata']) ;
 			 $collection_col =  $this->get_collection_ids() ;
-			 $url = SEARCHBLOX_LOCATION. ':8080/searchblox/servlet/AutoSuggest' ."?". $mydata . '&'. $collection_col; 
+			 $url = SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/AutoSuggest' ."?". $mydata . '&'. $collection_col; 
 
 			if(! empty( $mydata ) &&  ( !empty($url) ) ) { 
 				$resp = array () ; 
@@ -254,7 +254,7 @@ if ( !class_exists( 'Searchblox_frontend' ) ) {
 			 $limit = '4' ; 
 			 $mydata = sanitize_text_field( $_GET['mydata']) ;
 			 $collection_col =  $this->get_collection_ids() ;
-			 $url = SEARCHBLOX_LOCATION. ':8080/searchblox/servlet/AutoSuggest' ."?". $mydata . '&limit='. $limit . '&'. $collection_col; 
+			 $url = SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/AutoSuggest' ."?". $mydata . '&limit='. $limit . '&'. $collection_col; 
 
 			if(! empty( $mydata ) &&  ( !empty($url) ) ) { 
 				$resp = array () ; 
@@ -373,11 +373,14 @@ if ( !class_exists( 'Searchblox_frontend' ) ) {
 
 				wp_enqueue_script('facetview.js');
 				wp_localize_script('facetview.js', 'facetview_vars', array(
-					'search_url' 	       => __( SEARCHBLOX_LOCATION. ':8080/searchblox/servlet/SearchServlet' ) ,
+					'search_url' 	       => __
+					( SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/SearchServlet' ) ,
 					'search_collection_ids' => __ ( $this->get_collection_ids() ) , 
 					'admin_url' 		   => __ (  admin_url('admin-ajax.php') )	,
-					'auto_suggest'         => __ ( SEARCHBLOX_LOCATION. ':8080/searchblox/servlet/AutoSuggest' ),
-					'report_servlet'       => __ ( SEARCHBLOX_LOCATION . ':8080/searchblox/servlet/ReportServlet'), 
+					'auto_suggest'         => __ 
+					( SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/AutoSuggest' ),
+					'report_servlet'       => __ 
+					( SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/ReportServlet'), 
 					'plugin_path'          => __( $pp ) , 
 					'_ajax_nonce'          => __ ( $nonce )
 					)

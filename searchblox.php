@@ -4,7 +4,7 @@
  Plugin Name: SearchBlox
  Plugin URI: http://www.searchblox.com
  Description: Adds SearchBlox search functionality to WordPress websites. Indexes whole website to be searched easily.
- Version: 0.3
+ Version: 0.4
  Author: SearchBlox Software, Inc.
  Author URI: http://www.searchblox.com
  License: GPLv2
@@ -29,13 +29,15 @@ GNU General Public License for more details.
 		$collection              =  sanitize_text_field ( get_option( 'searchblox_collection' )  ) ; 
 		$location                =  sanitize_text_field ( rtrim( get_option( 'searchblox_location' ) , "/") ) ; 
 		$api_key     			 =  sanitize_text_field ( get_option( 'searchblox_apikey' ) )  ;
-         
+        $port_no     			 =  sanitize_text_field ( get_option( 'searchblox_portno' ) ) ; 
+		
 		define( 'PLUGIN_FULL_PATH', WP_PLUGIN_URL .'/'. str_replace(basename( __FILE__), "", plugin_basename(__FILE__) ) );
 		define( 'MENU_PAGE', "http://".$_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF']. '?page=searchblox_settings');
 		define( 'PLATFORM' , $platform ); // Windows or Linux
 		define( 'SEARCHBLOX_COLLECTION', $collection );
 		define( 'SEARCHBLOX_LOCATION', $location );
 		define( 'SEARCHBLOX_APIKEY', $api_key );
+		define('SEARCHBLOX_PORTNO' , $port_no ) ;  // Assumed Port No.
 		
 		if ( is_admin() ) {
 			include_once( ABSPATH . 'wp-includes/pluggable.php' ); //Hack for wp_get_current_user fatal error.
@@ -59,8 +61,6 @@ GNU General Public License for more details.
 		$plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 		check_admin_referer( "activate-plugin_{$plugin}" );
 
-		# Uncomment the following line to see the function in action
-		# exit( var_dump( $_GET ) );
 	}
 
 
@@ -90,9 +90,6 @@ GNU General Public License for more details.
     }
 	
 	
-	
-	
-	
 /*
  * Initial function to set menu 
  * 
@@ -105,8 +102,9 @@ GNU General Public License for more details.
 		
 		add_submenu_page( 'SearchBlox' , 'SearchBlox' , 'Search Collection' , 'manage_options' , 'search_collection' , 'searchblox_show_collections' ); 
 		
-		if ( empty( $GLOBALS['wp_rewrite'] ) )
-		$GLOBALS['wp_rewrite'] = new WP_Rewrite();
+		if ( empty( $GLOBALS['wp_rewrite'] ) ) : 
+			$GLOBALS['wp_rewrite'] = new WP_Rewrite();
+		endif ;
 	}
 
 
@@ -136,20 +134,21 @@ GNU General Public License for more details.
  * 
  */
  
-	 function searchblox_admin_page() { 
-	 
-		$api_authorized                       = get_option( 'searchblox_apikey' );
-		$collection_initialized     = get_option( 'searchblox_collection' );
-		$location                                    = get_option( 'searchblox_location'); 
-		
-		if( $api_authorized && $location   ) {
+	function searchblox_admin_page() { 
+
+		$api_authorized                       =  get_option( 'searchblox_apikey' );
+		$collection_initialized               =  get_option( 'searchblox_collection' );
+		$location                             =  get_option( 'searchblox_location'); 
+		$port_no                              =  get_option( 'searchblox_portno'); 
+
+		if( $api_authorized && $location && $port_no  ) {
 			if( $collection_initialized ) {
 				include_once ( 'assets/pages/searchblox_full_page.php'); 
 			} else {
 				include_once ( 'assets/pages/searchblox_collection_page.php'); 
 			}
 		} else { 
-			  include_once ( 'assets/pages/searchblox_api_page.php') ; 
+			include_once ( 'assets/pages/searchblox_api_page.php') ; 
 		}
 	}
 
@@ -161,13 +160,13 @@ GNU General Public License for more details.
 
 	function searchblox_show_collections() {
 		
-		if( ! SEARCHBLOX_APIKEY   ||  ! SEARCHBLOX_COLLECTION ||  ! SEARCHBLOX_LOCATION  ) {
+		if( ! SEARCHBLOX_APIKEY   ||  ! SEARCHBLOX_COLLECTION ||  ! SEARCHBLOX_LOCATION || ! SEARCHBLOX_PORTNO  ) {
 			
 		 echo '<div class="error fade"><p><b>[SearchBlox]</b> Searchblox settings not configured.</p></div>' ;
 		 return ; 
 		} 
 		
-		$url = SEARCHBLOX_LOCATION . ':8080/searchblox/servlet/SearchServlet?&query=""&xsl=json' ; 
+		$url = SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/servlet/SearchServlet?&query=""&xsl=json' ; 
 		
 	    $response = searchblox_curl_get_request( $url ) ;
 	    $collections  = array() ; 
@@ -191,13 +190,13 @@ GNU General Public License for more details.
  * 
  * 
  */
- 
+
 if( is_admin() ) { 
 
 	if( isset($_POST['submit_api']) || isset( $_POST['submit_collection']) || isset ($_POST['submit_re_configure']) ) { 
 	
 	   if( ! check_admin_referer( 'searchblox_nonce', 'searchblox_nonce_field' ) ) 
-	   exit;
+	   return ;
 	
 	   if ( isset( $_POST['submit_api'] )  && isset( $_POST['sb_form'] ) ) {
 			
@@ -211,8 +210,9 @@ if( is_admin() ) {
 				add_action( 'admin_notices', 'searchblox_collection_warning');
 			}
 		}
-		if (  isset( $_POST['submit_re_configure'] ) ) {
-			searchblox_handle_re_configure_form(); 
+		if (  isset( $_POST['submit_re_configure'] ) && isset( $_POST['searchblox_clear'] ) ) {
+			
+			 searchblox_handle_re_configure_form();
 		}
 		
 	} 

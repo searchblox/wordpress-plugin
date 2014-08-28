@@ -26,12 +26,12 @@ function searchblox_curl_request( $url , $xml_input = ''  ) {
 if ( is_wp_error( $response ) ) {
    $error_message = $response->get_error_message();
    return "Something went wrong: $error_message";
-}  
+} 
 	    $body = $response['body'];
 		$xml = simplexml_load_string($body);
 	    global $statuscode; 
     	$statuscode = (string) $xml->statuscode ;
-	    
+	   // print_r($xml) ;
 	    if (intval($statuscode)>=100 AND intval($statuscode)<=701) {
 			
 			if ( intval($statuscode) == 100 ) {

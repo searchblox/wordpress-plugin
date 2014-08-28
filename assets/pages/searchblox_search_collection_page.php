@@ -3,16 +3,18 @@ if(isset( $_POST['submit'] ) ) {
 
 		wp_verify_nonce( 'searchblox_nonce' , 'searchblox_nonce_field' );
 		if( ! empty ( $_POST['searchblox_check'] ) ) : 
+	
 			// Good idea to make sure things are set before using them
 			$_POST['searchblox_check'] =  (array) $_POST['searchblox_check'] ;
 
 			// Any of the WordPress data validation functions can be used here
 			$_POST['searchblox_check'] = array_map( 'sanitize_text_field', $_POST['searchblox_check'] );
+	
 			update_option( 'searchblox_search_collection' , $_POST['searchblox_check'] ) ; 
-		else : 		
-			update_option( 'searchblox_search_collection' , '' ) ; 
+		else : 
+	    	update_option( 'searchblox_search_collection' , '' ) ; 
 			
-		endif ; 
+		endif ;
 	}
 ?>
  <div class="wrap">
@@ -51,7 +53,7 @@ if(isset( $_POST['submit'] ) ) {
 			<th>
 			<input type="checkbox" class="sb_check" name="searchblox_check[]" 
 				value="<?php  echo $collection->{'@id'};  ?>"
-				<?
+				<?php
 				if( get_option( 'searchblox_search_collection' ) ) :
 				
 				if( in_array( $collection->{'@id'}  , get_option( 'searchblox_search_collection') ) ) {
