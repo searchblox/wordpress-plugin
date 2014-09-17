@@ -3,7 +3,7 @@ Contributors: tselvaraj
 Tags: search, lucene, custom search, website search, site search
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 0.4
+Stable tag: 0.5
 
 SearchBlox is an out-of-the-box Enterprise Search Solution built on top of Apache Lucene. The plugin simplifies the Wordpress Integration.
 
