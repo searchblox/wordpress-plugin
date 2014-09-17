@@ -1,2 +1,0 @@
-SearchBlox WordPress-Plugin
-================

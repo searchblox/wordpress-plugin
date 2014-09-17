@@ -4,7 +4,7 @@
  Plugin Name: SearchBlox
  Plugin URI: http://www.searchblox.com
  Description: Adds SearchBlox search functionality to WordPress websites. Indexes whole website to be searched easily.
- Version: 0.4
+ Version: 0.5
  Author: SearchBlox Software, Inc.
  Author URI: http://www.searchblox.com
  License: GPLv2

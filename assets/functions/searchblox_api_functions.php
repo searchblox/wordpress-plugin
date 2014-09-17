@@ -154,7 +154,9 @@
 			delete_option('searchblox_collection') ; 
 			delete_option('searchblox_location') ; 
 		    delete_option('searchblox_portno') ;
-		
+		    delete_option('searchblox_search_collection') ; 
+		    delete_option('searchblox_indexed') ; 
+		   
 		    wp_redirect( searchblox_url() ) ;   // Now Back to the first step
 	
 	}
@@ -178,6 +180,7 @@
 		$offset = isset( $_GET['offset'] ) ? intval( $_GET['offset'] ) : 0;
 		$batch_size = isset( $_GET['batch_size'] ) ? intval( $_GET['batch_size'] ) : 4;
 		$resp = NULL;
+        $error_count = 0 ; 
 		$num_written = 0 ;
 		$query_limit =  $batch_size ; 
 		$results = array() ;
@@ -224,11 +227,21 @@
 			$num_written = 0;
 		}
 	 
+		
+		if( ! isset( $error )  && ( $error_count == 0 ) ) {
+			//If indexing successful , then set variable
+
+			if( ! get_option ('searchblox_indexed') ) {
+				update_option('searchblox_indexed' , 1 ) ; 
+			}	   
+
+		} 
+		
 		header( 'Content-Type: application/json' );
 		if( ! isset( $error ) ) {
 			
-		$response = array( 'num_written' => $num_written, 'total' => $total_posts ); 
-		print( json_encode( $response ) );
+			$response = array( 'num_written' => $num_written, 'total' => $total_posts ); 	
+			print( json_encode( $response ) );
 			
 		} else {
 			
@@ -268,7 +281,7 @@
 		$xml_input = searchblox_xml_form( $result , $categories , $existing_tags ) ; 
 
 		$url = SEARCHBLOX_LOCATION. ':' . SEARCHBLOX_PORTNO . '/searchblox/api/rest/add';
-	  
+	    
 		$error_count = searchblox_curl_request( $url , $xml_input ) ;
 
         return $error_count ; 

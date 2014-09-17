@@ -1,11 +1,11 @@
 <?php defined('ABSPATH') or die("Direct Access Not Allowed!");
 
-
 /**
 * Load Initial settings for the plugin
 *
 * Performs most of the Initial Work.
 */
+
 
 	function searchblox_initial_settings() {
 
@@ -13,8 +13,14 @@
 
 		add_action( 'admin_enqueue_scripts', 'searchblox_wp_admin_style' );
 		add_action( 'admin_menu', 'searchblox_admin_init' );
-		add_action( 'publish_post', 'searchblox_trigger_index' ); // If a post is published, index it.
-		add_action( 'delete_post', 'searchblox_trigger_delete' ); // If a post is deleted, remove it from index.
+		
+		 // If Indexing Done , then Sync Posts		 
+		if(  get_option('searchblox_indexed') ) {
+		
+			add_action( 'publish_post', 'searchblox_trigger_index' ); // If a post is published, index it.
+			add_action( 'delete_post', 'searchblox_trigger_delete' ); // If a post is deleted, remove it from index.
+
+		}
 		
 		/// ALL ACTIONS //
 		
